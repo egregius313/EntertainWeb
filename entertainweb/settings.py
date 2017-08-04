@@ -26,6 +26,7 @@ SECRET_KEY = '***REMOVED***'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+	'www.michaelmanis.com',
         'entertainweb-dev.us-east-2.elasticbeanstalk.com',
         '127.0.0.1',
 ]
