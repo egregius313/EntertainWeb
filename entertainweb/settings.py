@@ -26,7 +26,7 @@ SECRET_KEY = '***REMOVED***'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-        'entertainweb-test.mhzbp9vmgm.us-east-2.elasticbeanstalk.com',
+        'entertainweb-dev.us-east-2.elasticbeanstalk.com',
         '127.0.0.1',
 ]
 
