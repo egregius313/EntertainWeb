@@ -137,4 +137,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # noinspection PyUnresolvedReferences
-STATIC_ROOT = '/static/=www/static/'
+STATIC_ROOT = '/var/www/michaelmanis.com/static/'
