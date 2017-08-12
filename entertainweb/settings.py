@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     'entertainweb-dev.us-east-2.elasticbeanstalk.com',
     'awseb-e-z-awsebloa-t1p62mramvnf-1430633512.us-east-2.elb.amazonaws.com',
     '127.0.0.1',
+    'localhost',
 ]
 
 # Application definition
