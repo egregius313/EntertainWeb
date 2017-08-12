@@ -1,0 +1,37 @@
+{%  load static %}
+{% load light_extras %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'lights/style.css' %}" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+{% if divider_dict %}
+    {% for divider, button_list in divider_dict|item_macro %}
+        <div class="button_divider">{{ divider }}<br />
+        {% for button in button_list %}
+            <button class="remote_button" data-message="{{ button.message_string }}" onclick="button_pressed(this)">{{ button.button_name }}</button>
+        {% endfor %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>divider_dict is empty!</p>
+{% endif %}
+<p id="demo"></p>
+<div id="ajax_url" ajax-url="{% url 'lights:button_pressed' %}" disabled="true"></div>
+
+{% csrf_token %}
+<script>
+    function button_pressed(button) {
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                document.getElementById("demo").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("POST", document.getElementById('ajax_url').getAttribute('ajax-url'), true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.setRequestHeader("X-CSRFToken", csrftoken);
+        xhttp.send("button_id=" + button.getAttribute('data-message'));
+    }
+</script>
