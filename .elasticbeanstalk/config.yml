@@ -2,7 +2,7 @@ branch-defaults:
   default:
     environment: entertainweb-test
   master:
-    environment: entertainweb-dev
+    environment: EntertainWeb-dev
 global:
   application_name: EntertainWeb
   branch: null
