@@ -25,7 +25,7 @@ def button_pressed(button_xhttp):
     server_socket.bind(('0.0.0.0', 8493))
 
     server_socket.settimeout(5)  # 5 seconds
-    server_socket.listen(1)
+    server_socket.listen(10)
 
     with server_socket:
         try:
