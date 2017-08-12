@@ -32,7 +32,7 @@ def button_pressed(button_xhttp):
             (client_socket, address) = server_socket.accept()
             print('%s connected' % address[0])
         except socket.timeout:
-            client_response = 'timeout'
+            client_response = b'timeout'
         else:
             with client_socket:
                 client_socket.sendall(bytes(button_message, encoding='UTF-8'))
