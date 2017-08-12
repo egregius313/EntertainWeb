@@ -22,7 +22,7 @@ def button_pressed(button_xhttp):
     button_message = button_xhttp.POST.get('button_id', None)
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((socket.gethostbyname('0.0.0.0'), 8493))
+    server_socket.bind(('0.0.0.0', 8493))
 
     server_socket.settimeout(5)  # 5 seconds
     server_socket.listen(1)
