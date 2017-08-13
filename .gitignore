@@ -1,2 +1,6 @@
 .elasticbeanstalk/app_versions
 .idea/*
+/.cache/*
+*.pyc
+/.bash_history
+/.viminfo

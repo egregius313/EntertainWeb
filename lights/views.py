@@ -22,6 +22,7 @@ def button_pressed(button_xhttp):
     button_message = button_xhttp.POST.get('button_id', None)
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind(('0.0.0.0', 8493))
 
     server_socket.settimeout(5)  # 5 seconds
@@ -37,7 +38,7 @@ def button_pressed(button_xhttp):
             with client_socket:
                 client_socket.sendall(bytes(button_message, encoding='UTF-8'))
                 client_response = client_socket.recv(1024)
-
+        server_socket.shutdown(socket.SHUT_RDWR)
     data = {
         'client_response': client_response.decode()
     }
