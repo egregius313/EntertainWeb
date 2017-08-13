@@ -29,8 +29,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'www.michaelmanis.com',
     'michaelmanis.com',
-    'entertainweb-dev.us-east-2.elasticbeanstalk.com',
-    'awseb-e-z-awsebloa-t1p62mramvnf-1430633512.us-east-2.elb.amazonaws.com',
+    'ec2-13-58-190-84.us-east-2.compute.amazonaws.com',
+    '13.58.190.84',
     '127.0.0.1',
     'localhost',
 ]
