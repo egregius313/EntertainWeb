@@ -3,3 +3,5 @@
 	name = thepyrotechnic
 [core]
 	editor = vim
+[push]
+	default = simple
