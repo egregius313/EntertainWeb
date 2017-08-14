@@ -100,12 +100,14 @@ if 'RDS_DB_NAME' in os.environ and platform.system() is not 'Windows':
         }
     }
 else:
+    with open('pass.dat') as f:
+        PASSWORD = f.read().strip()
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'entertainweb',
             'USER': 'mike',
-            'PASSWORD': '***REMOVED***',
+            'PASSWORD': PASSWORD,
             'HOST': '127.0.0.1',
             'PORT': '5432',
         }
