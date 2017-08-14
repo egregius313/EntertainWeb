@@ -2,11 +2,17 @@
 {% load light_extras %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'lights/style.css' %}" />
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<link href="https://necolas.github.io/normalize.css/7.0.0/normalize.css" rel="stylesheet">
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 {% if divider_dict %}
     {% for divider, button_list in divider_dict|item_macro %}
-        <div class="button_divider">{{ divider }}<br />
+        <div class="text_container">
+        {{ divider }}
+        </div>
+        <div class="button_divider">
         {% for button in button_list %}
             <button class="remote_button" data-message="{{ button.id }}" onclick="button_pressed(this)">{{ button.button_name }}</button>
         {% endfor %}
@@ -15,7 +21,7 @@
 {% else %}
     <p>divider_dict is empty!</p>
 {% endif %}
-<p id="demo"></p>
+<div id="demo"></div>
 <div id="ajax_url" ajax-url="{% url 'lights:button_pressed' %}" disabled="true"></div>
 
 {% csrf_token %}

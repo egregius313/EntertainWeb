@@ -28,7 +28,7 @@ else:
         SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_COOKIE_SECURE = True
@@ -144,6 +144,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-STATIC_ROOT = '/webapps/entertainweb/www/static/'
+if platform.system() is not 'Windows':
+    STATIC_ROOT = '/webapps/entertainweb/www/static/'
+else:
+    STATIC_ROOT = 'www/static/'
 STATIC_URL = '/static/'
