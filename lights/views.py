@@ -1,7 +1,10 @@
 import socket
+import ssl
 from collections import defaultdict
 
 import errno
+
+import os
 from django.views import generic
 from django.http import JsonResponse
 
@@ -35,9 +38,13 @@ def button_pressed(button_xhttp):
         server_socket.settimeout(5)  # 5 seconds
         server_socket.listen(1)
 
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context.load_cert_chain(certfile=os.environ['SSL_CERT'], keyfile=os.environ['SSL_KEY'])
+
         with server_socket:
             try:
-                (client_socket, address) = server_socket.accept()
+                (sock, address) = server_socket.accept()
+                client_socket = context.wrap_socket(sock, server_side=True)
                 print('%s connected' % address[0])
             except socket.timeout:
                 client_response = b'timeout'
