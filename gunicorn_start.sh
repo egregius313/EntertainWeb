@@ -1,3 +1,6 @@
+# import Django environment variables
+. /etc/profile.d/custom.sh
+
 NAME="entertainweb"                               # Name of the the application
 VIRTENVDIR=/webapps/virtenv                       # Which virtual environment to use 
 DJANGODIR=/webapps/entertainweb                   # Django project directory
