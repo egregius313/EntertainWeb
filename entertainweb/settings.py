@@ -30,6 +30,10 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 ALLOWED_HOSTS = [
     'www.michaelmanis.com',
     'michaelmanis.com',
