@@ -8,7 +8,7 @@
     {% for divider, button_list in divider_dict|item_macro %}
         <div class="button_divider">{{ divider }}<br />
         {% for button in button_list %}
-            <button class="remote_button" data-message="{{ button.message_string }}" onclick="button_pressed(this)">{{ button.button_name }}</button>
+            <button class="remote_button" data-message="{{ button.id }}" onclick="button_pressed(this)">{{ button.button_name }}</button>
         {% endfor %}
         </div>
     {% endfor %}
