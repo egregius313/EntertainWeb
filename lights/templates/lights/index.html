@@ -1,47 +1,123 @@
-{%  load static %}
+{% load static %}
 {% load light_extras %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'lights/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'lights/style.css' %}"/>
 <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-<link href="https://necolas.github.io/normalize.css/7.0.0/normalize.css" rel="stylesheet">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
-<div id="loading-overlay"></div>
+<script src="{% static 'lights/js/iris/iris.min.js' %}"></script>
+
+<div id="loading-overlay" class="loading-overlay"></div>
+
+<div id="color_div">
+    <button id="color_picker_btn" class="remote_button" data-message="014,131,205" data-ajax-url="{% url 'lights:rgb_message' %}">Custom Color</button>
+    <div id="palette"></div>
+</div>
 
 {% if divider_dict %}
     {% for divider, button_list in divider_dict|item_macro %}
         <div class="text_container">
-        {{ divider }}
+            {{ divider }}
         </div>
         <div class="button_divider">
-        {% for button in button_list %}
-            <button class="remote_button" data-message="{{ button.id }}" onclick="button_pressed(this)">{{ button.button_name }}</button>
-        {% endfor %}
+            {% for button in button_list %}
+                <button class="remote_button" data-message="{{ button.id }}" onclick="button_pressed(this)">{{ button.button_name }}</button>
+            {% endfor %}
         </div>
     {% endfor %}
 {% else %}
     <p>divider_dict is empty!</p>
 {% endif %}
 <div id="demo"></div>
-<div id="ajax_url" ajax-url="{% url 'lights:button_pressed' %}" disabled="true"></div>
+<div id="button-pressed-url" ajax-url="{% url 'lights:button_pressed' %}" disabled="true"></div>
 
 {% csrf_token %}
 <script>
-    function button_pressed(button) {
-        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    var form_enabled = true; //Prevent button spamming
+    var overlay = $("#loading-overlay");
+    var color_picker_btn = $('#color_picker_btn');
+    var palette = $('#palette');
 
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                document.getElementById("demo").innerHTML = this.responseText;
+    $(document).ready(function () {
+        palette.iris({
+            hide: true,
+            color: '#0e83cd',
+            palettes: true,
+            change: function (event, ui) {
+                color_picker_btn.css('border-color', ui.color.toString());
+                var rgb = ui.color.toRgb();
+                color_picker_btn.attr('data-message', pad_str(rgb.r.toString(), 3) + ',' + pad_str(rgb.g.toString(), 3) + ',' + pad_str(rgb.b.toString(), 3));
             }
-        };
-        xhttp.open("POST", document.getElementById('ajax_url').getAttribute('ajax-url'), true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.setRequestHeader("X-CSRFToken", csrftoken);
-        xhttp.send("button_id=" + button.getAttribute('data-message'));
+        });
+
+        color_picker_btn.click(function () {
+            if (color_picker_btn.text() === 'Custom Color') {
+                palette.iris('show');
+                color_picker_btn.text('Send');
+            } else if (color_picker_btn.text() === 'Send') {
+                if (form_enabled) {
+                    form_enabled = false;
+                    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+                    overlay.toggleClass("loading-anim");
+
+                    $.ajax({
+                        url: color_picker_btn.attr('data-ajax-url'),
+                        method: 'POST',
+                        data: {
+                            'color': color_picker_btn.attr('data-message')
+                        },
+                        dataType: 'json',
+                        beforeSend: function(xhr) {
+                          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        },
+                        complete: function(data) {
+                            document.getElementById("demo").innerHTML = data;
+                            form_enabled = true;
+                            palette.iris('hide');
+                            overlay.toggleClass("loading-anim")
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+
+    function button_pressed(button) {
+        palette.iris('hide'); // Closes color drawer and resets button
+        color_picker_btn.text('Custom Color');
+
+        if (form_enabled) {
+            form_enabled = false;
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("demo").innerHTML = this.responseText;
+                    form_enabled = true;
+                    overlay.toggleClass("loading-anim")
+                }
+            };
+            xhttp.open("POST", document.getElementById('button-pressed-url').getAttribute('ajax-url'), true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader("X-CSRFToken", csrftoken);
+            xhttp.send("button_id=" + button.getAttribute('data-message'));
+
+            overlay.toggleClass("loading-anim")
+
+        }
     }
+
+
+    function pad_str(str, max) {
+        str = str.toString();
+        return str.length < max ? pad_str("0" + str, max) : str;
+    }
+
+
 </script>

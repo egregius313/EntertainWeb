@@ -28,30 +28,58 @@ def button_pressed(button_xhttp):
         client_response = b'bad request'
     else:
         button_message = button.message_string
+        client_response = send_to_master(button_message)
 
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        server_socket.bind(('0.0.0.0', 8493))
-
-        server_socket.settimeout(5)  # 5 seconds
-        server_socket.listen(1)
-
-        with server_socket:
-            try:
-                (client_socket, address) = server_socket.accept()
-                print('%s connected' % address[0])
-            except socket.timeout:
-                client_response = b'timeout'
-            else:
-                with client_socket:
-                    client_socket.sendall(bytes(button_message, encoding='UTF-8'))
-                    client_response = client_socket.recv(1024)
-            try:
-                server_socket.shutdown(socket.SHUT_RDWR)
-            except OSError as e:
-                if e.errno != errno.ENOTCONN:
-                    raise
     data = {
         'client_response': client_response.decode()
     }
     return JsonResponse(data)
+
+
+def rgb_message(rgb_encoded):
+    rgb_str = rgb_encoded.POST.get('color', None)
+    if len(rgb_str) is 11:
+        r = rgb_str[:3]
+        g = rgb_str[4:7]
+        b = rgb_str[8:11]
+
+        if r.isdigit() and g.isdigit() and b.isdigit():
+            if 0 <= (int(r) and int(g) and int(b)) <= 255:
+                client_response = send_to_master('c:' + rgb_str)
+            else:
+                client_response = b'bad request'
+        else:
+            client_response = b'bad request'
+    else:
+        client_response = b'bad request'
+
+    data = {
+        'client_response': client_response.decode()
+    }
+    return JsonResponse(data)
+
+
+def send_to_master(message_str):
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('0.0.0.0', 8493))
+
+    server_socket.settimeout(5)  # 5 seconds
+    server_socket.listen(1)
+
+    with server_socket:
+        try:
+            (client_socket, address) = server_socket.accept()
+            print('%s connected' % address[0])
+        except socket.timeout:
+            client_response = b'timeout'
+        else:
+            with client_socket:
+                client_socket.sendall(bytes(message_str, encoding='UTF-8'))
+                client_response = client_socket.recv(1024)
+        try:
+            server_socket.shutdown(socket.SHUT_RDWR)
+        except OSError as e:
+            if e.errno != errno.ENOTCONN:
+                raise
+    return client_response
