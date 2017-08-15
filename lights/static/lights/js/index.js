@@ -4,6 +4,7 @@ var color_picker_btn;
 var palette;
 var remote_buttons;
 var css_style_str;
+var last_button;
 
 $(document).ready(function () {
     overlay = $("#loading-overlay");
@@ -24,6 +25,7 @@ $(document).ready(function () {
     });
 
     color_picker_btn.click(function () {
+        last_button = color_picker_btn;
         if (color_picker_btn.text() === 'Custom Color') {
             palette.iris('show');
             color_picker_btn.text('Send');
@@ -71,17 +73,21 @@ function parse_response(master_response, color_str) {
     overlay.toggleClass("loading-anim");
 
     var response = JSON.parse(master_response);
-    if (response['master_response'] !== 'bad request' /*&& response['master_response'] !== 'timeout'*/) {
+    if (response['master_response'] !== 'bad request' && response['master_response'] !== 'timeout') {
         css_style_str = 'rgb(' + color_str + ')';
 
         $(document.body).css('background', css_style_str);
         remote_buttons.css('color', css_style_str);
         remote_buttons.css('border', '5px outset ' + css_style_str);
+
+        if($('.is_mobile_device').css('display') === 'none')
+            last_button.css('background', '#FFF');
     }
 }
 
 
 function button_pressed(button) {
+    last_button = $(button);
     palette.iris('hide'); // Closes color drawer and resets button
     color_picker_btn.text('Custom Color');
 

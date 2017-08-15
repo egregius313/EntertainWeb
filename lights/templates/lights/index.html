@@ -33,7 +33,8 @@
 {% else %}
     <p>divider_dict is empty!</p>
 {% endif %}
-<div id="demo"></div>
+
 <div id="button-pressed-url" data-ajax-url="{% url 'lights:button_pressed' %}" disabled="true"></div>
+<div class="is_mobile_device"></div>
 
 {% csrf_token %}
