@@ -77,7 +77,7 @@ body {
 	-moz-transition: opacity 0.4s;
 	transition: opacity 0.4s;
 
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     z-index: -1;
