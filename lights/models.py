@@ -15,6 +15,7 @@ class ButtonDivider(models.Model):
 
 class Button(models.Model):
     button_name = models.CharField(max_length=20, default='')
+    related_color = models.CharField(max_length=11, default='000,000,000')
     message_string = models.CharField(max_length=595, default='')  # current max length of color string
     parent_divider = models.ForeignKey(ButtonDivider, on_delete=models.CASCADE)
     enabled = models.BooleanField(default=True)

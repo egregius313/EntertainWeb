@@ -67,10 +67,6 @@ body {
     margin-bottom: 0.25em;
 }
 
-.remote_button:hover {
-    color: #fff;
-    background: #0e83cd no-repeat fixed center;
-}
 .remote_button:active {
     border-style: inset;
 }

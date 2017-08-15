@@ -25,13 +25,16 @@ def button_pressed(button_xhttp):
     try:
         button = Button.objects.get(pk=button_id)
     except Button.DoesNotExist:
-        client_response = b'bad request'
+        master_response = b'bad request'
+        related_color = None
     else:
         button_message = button.message_string
-        client_response = send_to_master(button_message)
+        master_response = send_to_master(button_message)
+        related_color = button.related_color
 
     data = {
-        'client_response': client_response.decode()
+        'master_response': master_response.decode(),
+        'related_color': related_color
     }
     return JsonResponse(data)
 
@@ -45,16 +48,16 @@ def rgb_message(rgb_encoded):
 
         if r.isdigit() and g.isdigit() and b.isdigit():
             if 0 <= (int(r) and int(g) and int(b)) <= 255:
-                client_response = send_to_master('c:' + rgb_str)
+                master_response = send_to_master('c:' + rgb_str)
             else:
-                client_response = b'bad request'
+                master_response = b'bad request'
         else:
-            client_response = b'bad request'
+            master_response = b'bad request'
     else:
-        client_response = b'bad request'
+        master_response = b'bad request'
 
     data = {
-        'client_response': client_response.decode()
+        'master_response': master_response.decode()
     }
     return JsonResponse(data)
 
