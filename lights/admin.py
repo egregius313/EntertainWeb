@@ -11,10 +11,10 @@ class ButtonAdmin(admin.ModelAdmin):
 
 
 class TokenAdmin(admin.ModelAdmin):
-    list_display = ('in_use', 'expiry_date', 'token')
+    list_display = ('in_use', 'notes', 'expiry_date', 'token')
 
     list_filter = ['in_use', 'expiry_date']
-    search_fields = ['token']
+    search_fields = ['token', 'notes']
 
 admin.site.register(Button, ButtonAdmin)
 admin.site.register(ButtonDivider)
