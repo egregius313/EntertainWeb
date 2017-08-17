@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from django.db.models import F
 from django.views import generic
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth import authenticate
 from django.utils import timezone
 
@@ -42,6 +42,24 @@ class IndexView(generic.ListView):
         return session_dict
 
 
+def check_auth(request):
+    authenticated = False
+    token = request.session.get('token')
+    if token is not None:
+        try:
+            matched_token = AccessToken.objects.get(pk=token)
+        except AccessToken.DoesNotExist:
+            request.session.pop('token')
+        else:
+            timezone.activate(timezone.utc)
+            if matched_token.expiry_date > timezone.now():
+                authenticated = True
+            else:
+                request.session.pop('token')
+                matched_token.delete()
+    return authenticated
+
+
 def verify_token(request):
     requested_token = request.POST['token']
     try:
@@ -68,82 +86,90 @@ def verify_token(request):
 
 
 def verify_password(request):
-    password_raw = request.POST['password']
-    user = authenticate(request, username='michael', password=password_raw)
-    if user is not None:
-        token = AccessToken.objects.create()
-        access_token = token.token
-    else:
-        access_token = 'bad request'
+    if check_auth(request):
+        password_raw = request.POST['password']
+        user = authenticate(request, username='michael', password=password_raw)
+        if user is not None:
+            token = AccessToken.objects.create()
+            access_token = token.token
+        else:
+            access_token = 'bad request'
 
-    data = {
-        'access_token': access_token
-    }
-    return JsonResponse(data)
+        data = {
+            'access_token': access_token
+        }
+        return JsonResponse(data)
+    return HttpResponseForbidden
 
 
 def modify_life(request):
-    hours_to_add = request.POST['hours']
-    access_token = request.POST['access_token']
-    if hours_to_add.isdigit() and int(hours_to_add) > 0:
-        hours_to_add = int(hours_to_add)
-        try:
-            token = AccessToken.objects.get(pk=access_token)
-            token.expiry_date = F('expiry_date') + datetime.timedelta(hours=hours_to_add)
-            token.save()
-        except AccessToken.DoesNotExist:
-            response = 'bad request'
+    if check_auth(request):
+        hours_to_add = request.POST['hours']
+        access_token = request.POST['access_token']
+        if hours_to_add.isdigit() and int(hours_to_add) > 0:
+            hours_to_add = int(hours_to_add)
+            try:
+                token = AccessToken.objects.get(pk=access_token)
+                token.expiry_date = F('expiry_date') + datetime.timedelta(hours=hours_to_add)
+                token.save()
+            except AccessToken.DoesNotExist:
+                response = 'bad request'
+            else:
+                response = 'success'
         else:
-            response = 'success'
-    else:
-        response = 'bad request'
+            response = 'bad request'
 
-    data = {
-        'response': response
-    }
-    return JsonResponse(data)
+        data = {
+            'response': response
+        }
+        return JsonResponse(data)
+    return HttpResponseForbidden
 
 
 def button_pressed(request):
-    button_id = request.POST.get('button_id', None)
-    try:
-        button = Button.objects.get(pk=button_id)
-    except Button.DoesNotExist:
-        master_response = b'bad request'
-        related_color = None
-    else:
-        button_message = button.message_string
-        master_response = send_to_master(button_message)
-        related_color = button.related_color
+    if check_auth(request):
+        button_id = request.POST.get('button_id', None)
+        try:
+            button = Button.objects.get(pk=button_id)
+        except Button.DoesNotExist:
+            master_response = b'bad request'
+            related_color = None
+        else:
+            button_message = button.message_string
+            master_response = send_to_master(button_message)
+            related_color = button.related_color
 
-    data = {
-        'master_response': master_response.decode(),
-        'related_color': related_color
-    }
-    return JsonResponse(data)
+        data = {
+            'master_response': master_response.decode(),
+            'related_color': related_color
+        }
+        return JsonResponse(data)
+    return HttpResponseForbidden
 
 
 def rgb_message(request):
-    rgb_str = request.POST.get('color', None)
-    if len(rgb_str) is 11:
-        r = rgb_str[:3]
-        g = rgb_str[4:7]
-        b = rgb_str[8:11]
+    if check_auth(request):
+        rgb_str = request.POST.get('color', None)
+        if len(rgb_str) is 11:
+            r = rgb_str[:3]
+            g = rgb_str[4:7]
+            b = rgb_str[8:11]
 
-        if r.isdigit() and g.isdigit() and b.isdigit():
-            if 0 <= (int(r) and int(g) and int(b)) <= 255:
-                master_response = send_to_master('c:' + rgb_str)
+            if r.isdigit() and g.isdigit() and b.isdigit():
+                if 0 <= (int(r) and int(g) and int(b)) <= 255:
+                    master_response = send_to_master('c:' + rgb_str)
+                else:
+                    master_response = b'bad request'
             else:
                 master_response = b'bad request'
         else:
             master_response = b'bad request'
-    else:
-        master_response = b'bad request'
 
-    data = {
-        'master_response': master_response.decode()
-    }
-    return JsonResponse(data)
+        data = {
+            'master_response': master_response.decode()
+        }
+        return JsonResponse(data)
+    return HttpResponseForbidden
 
 
 def send_to_master(message_str):
