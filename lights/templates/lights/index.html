@@ -2,7 +2,7 @@
 {% load light_extras %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'lights/style.css' %}"/>
-<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Raleway" rel="stylesheet">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -12,14 +12,34 @@
 
 <script src="{% static 'lights/js/index.js' %}"></script>
 
+{% if session_dict|get_item:'authenticated'%}
+
 <div id="loading-overlay" class="loading-overlay"></div>
 
+<div id="sign-in-overlay" class="sign-in-overlay">
+    <div id="sign-in-container">
+        <input type="password" id="code-password">
+        <button type="button" id="code-submit" class="remote_button submit_btn" data-ajax-url="{% url 'lights:verify_password' %}"></button>
+    </div>
+    <div id="access-code-container">
+        <p id="access_code"></p>
+        <div style="display:flex; align-items: center;"><p class="flavor_text">Add&nbsp;</p><input type="number" id="access_code_life" placeholder="1"><p id="hour_label" class="flavor_text">&nbsp;hour.</p></div>
+        <button type="button" id="life-submit" class="remote_button submit_btn" data-ajax-url="{% url 'lights:modify_life' %}"></button>
+    </div>
+</div>
+
+<img id="access_code_btn" src="{% static 'lights/media/lock.svg' %}" data-close-icon="{% static 'lights/media/close.svg' %}">
+
+<div class="text_container" style="align-items: flex-start">
+    Enjoy.
+</div>
 <div id="color_div" class="button_divider">
-    <button id="color_picker_btn" class="remote_button" data-message="014,131,205" data-ajax-url="{% url 'lights:rgb_message' %}">Custom Color</button>
+    <button id="color_picker_btn" class="remote_button" data-message="014,131,205" data-ajax-url="{% url 'lights:rgb_message' %}">Custom</button>
     <div id="palette"></div>
 </div>
 
-{% if divider_dict %}
+{% if session_dict|get_item:'divider_dict' %}
+    {% with divider_dict=session_dict|get_item:'divider_dict' %}
     {% for divider, button_list in divider_dict|item_macro %}
         <div class="text_container">
             {{ divider }}
@@ -30,11 +50,19 @@
             {% endfor %}
         </div>
     {% endfor %}
+    {% endwith %}
 {% else %}
     <p>divider_dict is empty!</p>
 {% endif %}
 
 <div id="button-pressed-url" data-ajax-url="{% url 'lights:button_pressed' %}" disabled="true"></div>
 <div class="is_mobile_device"></div>
+
+{% else %}
+    <div id="token-overlay">
+        <p class="flavor_text">Enter your access token.</p>
+        <input id="token_input" data-ajax-url="{% url 'lights:verify_token' %}">
+    </div>
+{% endif %}
 
 {% csrf_token %}

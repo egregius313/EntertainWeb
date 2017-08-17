@@ -1,4 +1,23 @@
+import secrets
+import datetime
+
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
+
+
+def unique_random_num():
+    rand_num = secrets.randbelow(8999) + 1000
+    try:
+        AccessToken.objects.get(pk=rand_num)
+    except AccessToken.DoesNotExist:
+        return rand_num
+    else:
+        return unique_random_num()
+
+
+def now_plus_some():
+    return timezone.now() + datetime.timedelta(hours=1)
 
 
 class ButtonDivider(models.Model):
@@ -14,7 +33,7 @@ class ButtonDivider(models.Model):
 
 
 class Button(models.Model):
-    button_name = models.CharField(max_length=20, default='')
+    button_name = models.CharField(max_length=8, default='')
     related_color = models.CharField(max_length=11, default='000,000,000')
     message_string = models.CharField(max_length=595, default='')  # current max length of color string
     parent_divider = models.ForeignKey(ButtonDivider, on_delete=models.CASCADE)
@@ -22,3 +41,12 @@ class Button(models.Model):
 
     def __str__(self):
         return self.button_name
+
+
+class AccessToken(models.Model):
+    token = models.IntegerField(primary_key=True, validators=[MaxValueValidator(9999), MinValueValidator(1000)], default=unique_random_num)
+    expiry_date = models.DateTimeField(default=now_plus_some)
+    in_use = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.token)

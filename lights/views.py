@@ -1,27 +1,112 @@
 import socket
 import errno
+import datetime
+import secrets
 
 from collections import defaultdict
 
+from django.db.models import F
 from django.views import generic
 from django.http import JsonResponse
+from django.contrib.auth import authenticate
+from django.utils import timezone
 
-from .models import Button
+from .models import Button, AccessToken
 
 
 class IndexView(generic.ListView):
     template_name = 'lights/index.html'
-    context_object_name = 'divider_dict'
+    context_object_name = 'session_dict'
 
     def get_queryset(self):
         divider_dict = defaultdict(list)
+
+        authenticated = False
+        token = self.request.session.get('token')
+        if token is not None:
+            try:
+                matched_token = AccessToken.objects.get(pk=token)
+            except AccessToken.DoesNotExist:
+                self.request.session.pop('token')
+            else:
+                timezone.activate(timezone.utc)
+                if matched_token.expiry_date > timezone.now():
+                    authenticated = True
+                else:
+                    self.request.session.pop('token')
+                    matched_token.delete()
+
+        session_dict = {'authenticated': authenticated, 'divider_dict': divider_dict}
+
         for button in Button.objects.all():
             divider_dict[button.parent_divider.divider_name].append(button)
-        return divider_dict
+        return session_dict
 
 
-def button_pressed(button_xhttp):
-    button_id = button_xhttp.POST.get('button_id', None)
+def verify_token(request):
+    requested_token = request.POST['token']
+    try:
+        matched_token = AccessToken.objects.get(pk=requested_token)
+    except AccessToken.DoesNotExist:
+        response = 'bad request'
+    else:
+        if matched_token.in_use:
+            response = 'bad request'
+        else:
+            matched_token.in_use = True
+            matched_token.save()
+
+            time_difference = matched_token.expiry_date - timezone.now()
+            request.session['token'] = matched_token.token
+            request.session.set_expiry(time_difference.total_seconds())
+
+        response = 'success'
+
+    data = {
+        'response': response
+    }
+    return JsonResponse(data)
+
+
+def verify_password(request):
+    password_raw = request.POST['password']
+    user = authenticate(request, username='michael', password=password_raw)
+    if user is not None:
+        token = AccessToken.objects.create()
+        access_token = token.token
+    else:
+        access_token = 'bad request'
+
+    data = {
+        'access_token': access_token
+    }
+    return JsonResponse(data)
+
+
+def modify_life(request):
+    hours_to_add = request.POST['hours']
+    access_token = request.POST['access_token']
+    if hours_to_add.isdigit() and int(hours_to_add) > 0:
+        hours_to_add = int(hours_to_add)
+        try:
+            token = AccessToken.objects.get(pk=access_token)
+            token.expiry_date = F('expiry_date') + datetime.timedelta(hours=hours_to_add)
+            token.save()
+        except AccessToken.DoesNotExist:
+            response = 'bad request'
+        else:
+            response = 'success'
+    else:
+        response = 'bad request'
+
+    data = {
+        'response': response
+    }
+    return JsonResponse(data)
+
+
+def button_pressed(request):
+    button_id = request.POST.get('button_id', None)
     try:
         button = Button.objects.get(pk=button_id)
     except Button.DoesNotExist:
@@ -39,8 +124,8 @@ def button_pressed(button_xhttp):
     return JsonResponse(data)
 
 
-def rgb_message(rgb_encoded):
-    rgb_str = rgb_encoded.POST.get('color', None)
+def rgb_message(request):
+    rgb_str = request.POST.get('color', None)
     if len(rgb_str) is 11:
         r = rgb_str[:3]
         g = rgb_str[4:7]
