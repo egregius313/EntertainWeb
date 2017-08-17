@@ -47,6 +47,7 @@ class AccessToken(models.Model):
     token = models.IntegerField(primary_key=True, validators=[MaxValueValidator(9999), MinValueValidator(1000)], default=unique_random_num)
     expiry_date = models.DateTimeField(default=now_plus_some)
     in_use = models.BooleanField(default=False)
+    notes = models.CharField(default='', max_length=512)
 
     def __str__(self):
         return str(self.token)
