@@ -238,6 +238,16 @@ input {
 #token_input {
     width: 4em;
     height: unset;
+    text-align: center;
+
+    color: #02d570;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px inset black;
+}
+#token_input:focus {
+    outline: 0;
 }
 
 @media (min-width: 320px) {

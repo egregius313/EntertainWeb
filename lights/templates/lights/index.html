@@ -60,7 +60,7 @@
 
 {% else %}
     <div id="token-overlay">
-        <p class="flavor_text">Enter your access token.</p>
+        <p class="flavor_text" style="font-weight: 600;">Enter your access token.</p>
         <input id="token_input" data-ajax-url="{% url 'lights:verify_token' %}">
     </div>
 {% endif %}
