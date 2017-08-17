@@ -1,7 +1,6 @@
 import socket
 import errno
 import datetime
-import secrets
 
 from collections import defaultdict
 

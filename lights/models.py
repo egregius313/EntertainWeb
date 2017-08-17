@@ -1,5 +1,5 @@
-import secrets
 import datetime
+import random
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 def unique_random_num():
-    rand_num = secrets.randbelow(8999) + 1000
+    rand_num = random.randrange(1000, 10000)
     try:
         AccessToken.objects.get(pk=rand_num)
     except AccessToken.DoesNotExist:
