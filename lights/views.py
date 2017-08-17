@@ -59,7 +59,7 @@ def verify_token(request):
             request.session['token'] = matched_token.token
             request.session.set_expiry(time_difference.total_seconds())
 
-        response = 'success'
+            response = 'success'
 
     data = {
         'response': response
