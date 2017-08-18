@@ -178,31 +178,28 @@ $(document).ready(function () {
 
     token_input.change(function () {
         if (token_input.val().length === 4) {
-            clearTimeout(wait);
-            wait = setTimeout(function () {
-                var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-                overlay.toggleClass("loading-anim");
+            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            overlay.toggleClass("loading-anim");
 
-                $.ajax({
-                    url: token_input.attr('data-ajax-url'),
-                    method: 'POST',
-                    data: {
-                        'token': token_input.val()
-                    },
-                    dataType: 'json',
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    },
-                    complete: function (data) {
-                        if (data.responseJSON['response'] === 'success') {
-                            token_input.css('border-color', '#02d570');
-                            location.reload();
-                        }
-                        else
-                            token_input.css('border-color', '#ff4303');
+            $.ajax({
+                url: token_input.attr('data-ajax-url'),
+                method: 'POST',
+                data: {
+                    'token': token_input.val()
+                },
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                },
+                complete: function (data) {
+                    if (data.responseJSON['response'] === 'success') {
+                        token_input.css('border-color', '#02d570');
+                        location.reload();
                     }
-                });
-            }, 300);
+                    else
+                        token_input.css('border-color', '#ff4303');
+                }
+            });
         }
     });
 });

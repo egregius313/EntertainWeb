@@ -113,7 +113,7 @@ input {
 .sign-in-overlay {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
     align-content: flex-start;
 
@@ -142,7 +142,7 @@ input {
 #sign-in-container {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
     align-content: flex-start;
 
@@ -161,14 +161,14 @@ input {
 #color_div {
     display: flex;
     flex-flow: column wrap;
-    justify-content: flex-start;
+    justify-content: space-around;
     align-items: center;
 }
 
 #access-code-container {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
     align-content: flex-start;
 
