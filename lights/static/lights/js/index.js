@@ -253,7 +253,7 @@ function parse_server_response(master_response, color_str) {
     color_picker_btn.text(custom_color_text);
     overlay.toggleClass("loading-anim");
     if (master_response !== 'bad request' && master_response !== 'timeout') {
-        css_style_str = 'rgb(' + color_str + ')';
+        css_style_str = color_str;
 
         if ($('.' + master_response + '-bg').length) {
             $(document.body).removeClass();
@@ -266,7 +266,8 @@ function parse_server_response(master_response, color_str) {
         remote_buttons.css('border', '5px outset ' + css_style_str);
 
         // if ($('.is_mobile_device').css('display') !== 'none')
-        last_button.css('background', '#FFF');
+        if (last_button)
+            last_button.css('background', '#FFF');
     }
 }
 
