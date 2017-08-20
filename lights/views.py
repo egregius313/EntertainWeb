@@ -151,10 +151,12 @@ def button_pressed(request):
             button_message = button.message_string
             master_response = send_to_master(button_message)
             related_color = button.related_color
+            svg_image = button.svg_image
 
         data = {
             'master_response': master_response.decode(),
-            'related_color': related_color
+            'related_color': related_color,
+            'svg_image': svg_image
         }
         return JsonResponse(data)
     return HttpResponseForbidden

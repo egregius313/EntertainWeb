@@ -247,7 +247,9 @@ function parse_status_request(master_response) {
 }
 
 
-function parse_server_response(master_response, color_str) {
+function parse_server_response(master_response, color_str, svg_image) {
+    svg_image = svg_image || 'none';
+
     form_enabled = true;
     palette.iris('hide');
     color_picker_btn.text(custom_color_text);
@@ -261,8 +263,11 @@ function parse_server_response(master_response, color_str) {
             $(document.body).addClass(master_response + '-bg')
         }
         else {
-            $(document.body).removeAttr("background-image");
+            $(document.body).removeAttr('style');
+            $(document.body).removeClass();
             $(document.body).css('background-color', css_style_str);
+            if (svg_image !== 'none')
+                (document.body).css('background-image', 'url(media/bg/' + svg_image + '),' + 'url(media/bg/' + svg_image + ')');
         }
 
         remote_buttons.css('color', css_style_str);
@@ -287,8 +292,8 @@ function button_pressed(button) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState === 4 && this.status === 200) {
-                var related_color ='rgb(' + JSON.parse(this.responseText)['related_color'] + ')';
-                parse_server_response(JSON.parse(this.responseText)['master_response'], related_color)
+                var related_color = 'rgb(' + JSON.parse(this.responseText)['related_color'] + ')';
+                parse_server_response(JSON.parse(this.responseText)['master_response'], related_color, this.responseText['svg_image'])
             }
         };
         xhttp.open("POST", document.getElementById('button-pressed-url').getAttribute('data-ajax-url'), true);
