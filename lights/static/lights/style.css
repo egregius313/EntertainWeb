@@ -359,12 +359,12 @@ input {
 }
 
 .sunset-bg {
-    background-image: url(media/bg/sunset.svg), url(media/bg/sundown.svg);
+    background-image: url(media/bg/sunset.svg), url(media/bg/sunset.svg);
     background-color: #963c28;
 }
 
 .sundown-bg {
-    background-image: url(media/bg/sundown.svg), url(media/bg/sunset.svg);
+    background-image: url(media/bg/sundown.svg), url(media/bg/sundown.svg);
     background-color: #060523;
 }
 
