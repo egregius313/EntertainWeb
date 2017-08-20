@@ -200,7 +200,7 @@ $(document).ready(function () {
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 },
                 success: function (data) {
-                    if (data.responseJSON['response'] === 'success') {
+                    if (data['response'] === 'success') {
                         token_input.css('border-color', '#02d570');
                         location.reload();
                     }
