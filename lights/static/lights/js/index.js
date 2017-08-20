@@ -262,7 +262,8 @@ function parse_server_response(master_response, color_str, svg_image) {
         if (master_response.charAt(0) !== 'c' && $('.' + master_response + '-bg').length) {
             $(document.body).removeAttr('style');
             $(document.body).removeClass();
-            $(document.body).addClass(master_response + '-bg')
+            $(document.body).addClass(master_response + '-bg');
+            css_style_str = $('.' + master_response + '-bg').css('background-color');
         }
         else {
             $(document.body).removeAttr('style');
