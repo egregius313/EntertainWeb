@@ -77,7 +77,7 @@ $(document).ready(function () {
                     },
                     success: function (data) {
 
-                        parse_server_response(data.responseText['master_response'],
+                        parse_server_response(data['master_response'],
                             'rgb(' + color_picker_btn.attr('data-message') + ')');
                     }
                 });
