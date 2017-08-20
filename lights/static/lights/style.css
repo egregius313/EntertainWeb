@@ -11,8 +11,11 @@ body {
 
     margin: 0;
 
-    background: #0e83cd;
+    background-position: 0 0, 40px 40px;
 
+    -webkit-background-size: 80px 80px;
+    -moz-background-size: 80px 80px;
+    background-size: 80px 80px;
 }
 
 input {
@@ -246,6 +249,7 @@ input {
     border-right: none;
     border-bottom: 1px inset black;
 }
+
 #token_input:focus {
     outline: 0;
 }
@@ -312,4 +316,74 @@ input {
 @media (min-width: 1281px) {
     /* hi-res laptops and desktops */
 
+}
+
+.off-bg {
+    background: url(media/bg/off.svg), url(media/bg/off.svg);
+    background-color: #000;
+}
+
+.sleep-bg {
+    background: url(media/bg/sleep.svg), url(media/bg/sleep.svg);
+    background-color: #160000;
+}
+
+.movie-bg {
+    background: url(media/bg/movie.svg), url(media/bg/movie.svg);
+    background-color: #32000c;
+}
+
+.thunder-bg {
+    background: url(media/bg/thunder.svg), url(media/bg/thunder.svg);
+    background-color: #547fc4;
+}
+
+.rain-bg {
+    background: url(media/bg/rain.svg), url(media/bg/rain.svg);
+    background-color: #0e83cd;
+}
+
+.snow-bg {
+    background: url(media/bg/snow.svg), url(media/bg/snow.svg);
+    background-color: #c8c8c8;
+}
+
+.sunrise-bg {
+    background: url(media/bg/sunrise.svg), url(media/bg/sunrise.svg);
+    background-color: #ff0a00;
+}
+
+.midday-bg {
+    background: url(media/bg/midday.svg), url(media/bg/midday.svg);
+    background-color: #ff6400;
+}
+
+.sundown-bg {
+    background: url(media/bg/sundown.svg), url(media/bg/sundown.svg);
+    background-color: #963c28;
+}
+
+.sunset-bg {
+    background: url(media/bg/sunset.svg), url(media/bg/sunset.svg);
+    background-color: #060523;
+}
+
+.calendar-bg {
+    background: url(media/bg/calendar.svg), url(media/bg/calendar.svg);
+    background-color: #00c18e;
+}
+
+.rangers-bg {
+    background: url(media/bg/rangers.svg), url(media/bg/rangers.svg);
+    background-color: #d31245;
+}
+
+.steelers-bg {
+    background: url(media/bg/steelers.svg), url(media/bg/steelers.svg);
+    background-color: #ffb612;
+}
+
+.stocks-bg {
+    background: url(media/bg/stocks.svg), url(media/bg/stocks.svg);
+    background-color: #037720;
 }

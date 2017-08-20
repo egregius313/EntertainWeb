@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'ajax/rgb_message/$', views.rgb_message, name='rgb_message'),
     url(r'ajax/verify_password/$', views.verify_password, name='verify_password'),
     url(r'ajax/modify_life/$', views.modify_life, name='modify_life'),
-    url(r'ajax/verify_token/$', views.verify_token, name='verify_token')
+    url(r'ajax/verify_token/$', views.verify_token, name='verify_token'),
+    url(r'ajax/status_request/$', views.status_request, name='status_request'),
 ]

@@ -49,6 +49,11 @@ $(document).ready(function () {
         }
     });
 
+
+    //Initial info request on page load
+    status_request();
+
+
     color_picker_btn.click(function () {
         last_button = color_picker_btn;
         if (color_picker_btn.text() === custom_color_text) {
@@ -70,9 +75,10 @@ $(document).ready(function () {
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader("X-CSRFToken", csrftoken);
                     },
-                    complete: function (data) {
+                    success: function (data) {
 
-                        parse_color_response(data.responseText, color_picker_btn.attr('data-message'));
+                        parse_server_response(JSON.parse(data.responseText)['master_response'],
+                            'rgb(' + color_picker_btn.attr('data-message') + ')');
                     }
                 });
             }
@@ -121,7 +127,7 @@ $(document).ready(function () {
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 },
-                complete: function (data) {
+                success: function (data) {
                     form_enabled = true;
                     overlay.toggleClass("loading-anim");
 
@@ -155,7 +161,7 @@ $(document).ready(function () {
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 },
-                complete: function (data) {
+                success: function (data) {
                     form_enabled = true;
                     overlay.toggleClass("loading-anim");
                     if (data.responseJSON['response'] === 'success')
@@ -191,7 +197,7 @@ $(document).ready(function () {
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 },
-                complete: function (data) {
+                success: function (data) {
                     if (data.responseJSON['response'] === 'success') {
                         token_input.css('border-color', '#02d570');
                         location.reload();
@@ -204,23 +210,63 @@ $(document).ready(function () {
     });
 });
 
+function status_request() {
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    overlay.toggleClass("loading-anim");
 
-function parse_color_response(master_response, color_str) {
+    $.ajax({
+        url: $('#status_request').attr('data-ajax-url'),
+        method: 'POST',
+        data: {
+            'request': 'status'
+        },
+        dataType: 'json',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        success: function (data) {
+            if (data.responseJSON['master_response'] !== 'bad request') {
+                parse_status_request(data.responseJSON['master_response'])
+            }
+        }
+    });
+}
+
+
+function parse_status_request(master_response) {
+    var color_str;
+    if (master_response !== 'bad request' && master_response !== 'timeout') {
+        if (master_response.charAt(0) === 'c') { // 'c' would be a custom color
+            color_str = 'rgb(' + master_response.substring(2) + ')';
+        }
+        else
+            color_str = $('.' + master_response + '-bg').css('background-color');
+
+        parse_server_response(master_response, color_str);
+    }
+}
+
+
+function parse_server_response(master_response, color_str) {
     form_enabled = true;
     palette.iris('hide');
     color_picker_btn.text(custom_color_text);
     overlay.toggleClass("loading-anim");
-
-    var response = JSON.parse(master_response);
-    if (response['master_response'] !== 'bad request' && response['master_response'] !== 'timeout') {
+    if (master_response !== 'bad request' && master_response !== 'timeout') {
         css_style_str = 'rgb(' + color_str + ')';
 
-        $(document.body).css('background', css_style_str);
+        if ($('.' + master_response + '-bg').length) {
+            $(document.body).removeClass();
+            $(document.body).addClass('.' + master_response + '-bg')
+        }
+        else
+            $(document.body).css('background-color', css_style_str);
+
         remote_buttons.css('color', css_style_str);
         remote_buttons.css('border', '5px outset ' + css_style_str);
 
-        if ($('.is_mobile_device').css('display') !== 'none')
-            last_button.css('background', '#FFF');
+        // if ($('.is_mobile_device').css('display') !== 'none')
+        last_button.css('background', '#FFF');
     }
 }
 
@@ -237,8 +283,8 @@ function button_pressed(button) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState === 4 && this.status === 200) {
-                var related_color = JSON.parse(this.responseText)['related_color'];
-                parse_color_response(this.responseText, related_color)
+                var related_color ='rgb(' + JSON.parse(this.responseText)['related_color'] + ')';
+                parse_server_response(JSON.parse(this.responseText)['master_response'], related_color)
             }
         };
         xhttp.open("POST", document.getElementById('button-pressed-url').getAttribute('data-ajax-url'), true);

@@ -60,6 +60,19 @@ def check_auth(request):
     return authenticated
 
 
+def status_request(request):
+    status_update = b'i'
+
+    if check_auth(request):
+        master_response = send_to_master(status_update).decode()
+
+        data = {
+            'master_response': master_response
+        }
+        return JsonResponse(data)
+    return HttpResponseForbidden
+
+
 def verify_token(request):
     requested_token = request.POST['token']
     try:
