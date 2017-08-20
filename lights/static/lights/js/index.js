@@ -53,7 +53,8 @@ $(document).ready(function () {
 
 
     //Initial info request on page load
-    status_request();
+    if (jQuery("[name=csrfmiddlewaretoken]").length)
+        status_request();
 
 
     color_picker_btn.click(function () {
