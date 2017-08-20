@@ -358,12 +358,12 @@ input {
     background-color: #ff6400;
 }
 
-.sundown-bg {
+.sunset-bg {
     background-image: url(media/bg/sundown.svg), url(media/bg/sundown.svg);
     background-color: #963c28;
 }
 
-.sunset-bg {
+.sundown-bg {
     background-image: url(media/bg/sunset.svg), url(media/bg/sunset.svg);
     background-color: #060523;
 }
