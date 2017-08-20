@@ -77,7 +77,7 @@ $(document).ready(function () {
                     },
                     success: function (data) {
 
-                        parse_server_response(JSON.parse(data.responseText)['master_response'],
+                        parse_server_response(data.responseText['master_response'],
                             'rgb(' + color_picker_btn.attr('data-message') + ')');
                     }
                 });
@@ -255,7 +255,7 @@ function parse_server_response(master_response, color_str) {
     if (master_response !== 'bad request' && master_response !== 'timeout') {
         css_style_str = color_str;
 
-        if ($('.' + master_response + '-bg').length) {
+        if (master_response.charAt(0) !== 'c' && $('.' + master_response + '-bg').length) {
             $(document.body).removeAttr("background-color");
             $(document.body).removeClass();
             $(document.body).addClass(master_response + '-bg')
