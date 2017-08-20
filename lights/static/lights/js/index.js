@@ -53,7 +53,7 @@ $(document).ready(function () {
 
 
     //Initial info request on page load
-    if (jQuery("[name=csrfmiddlewaretoken]").length)
+    if (overlay.length)
         status_request();
 
 
@@ -239,7 +239,7 @@ function status_request() {
 function parse_status_request(master_response) {
     var color_str;
     if (master_response !== 'bad request' && master_response !== 'timeout') {
-        if (master_response.substring(0,2) === 'c:') { // 'c:' would be a custom color
+        if (master_response.substring(0, 2) === 'c:') { // 'c:' would be a custom color
             color_str = 'rgb(' + master_response.substring(2) + ')';
         }
         else
@@ -260,7 +260,7 @@ function parse_server_response(master_response, color_str, svg_image) {
     if (master_response !== 'bad request' && master_response !== 'timeout') {
         css_style_str = color_str;
 
-        if (master_response.substring(0,2) !== 'c:' && $('.' + master_response + '-bg').length) {
+        if (master_response.substring(0, 2) !== 'c:' && $('.' + master_response + '-bg').length) {
             $(document.body).removeAttr('style');
             $(document.body).removeClass();
             $(document.body).addClass(master_response + '-bg');
@@ -271,7 +271,7 @@ function parse_server_response(master_response, color_str, svg_image) {
             $(document.body).removeClass();
             $(document.body).css('background-color', css_style_str);
             if (svg_image !== 'none')
-                $(document.body).css('background-image', 'url(' + static_dir + 'lights/media/bg/' +  svg_image + '),' + 'url(' + static_dir + 'lights/media/bg/' + svg_image + ')');
+                $(document.body).css('background-image', 'url(' + static_dir + 'lights/media/bg/' + svg_image + '),' + 'url(' + static_dir + 'lights/media/bg/' + svg_image + ')');
         }
         $('#status_text').text(get_flavor_message(master_response));
         remote_buttons.css('color', css_style_str);
@@ -314,7 +314,7 @@ function button_pressed(button) {
 
 
 function get_flavor_message(master_response) {
-    if (master_response.substring(0,2) === 'c:')
+    if (master_response.substring(0, 2) === 'c:')
         return "A custom color is set.";
 
     switch (master_response) {
