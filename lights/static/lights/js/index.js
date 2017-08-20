@@ -18,6 +18,7 @@ var code_close_icon;
 var code_lock_icon;
 var custom_color_text;
 var wait; //delays token submission
+var static_dir;
 
 
 $(document).ready(function () {
@@ -31,6 +32,7 @@ $(document).ready(function () {
     access_code_life = $('#access_code_life');
     token_input = $('#token_input');
     remote_buttons = $('.remote_button');
+    static_dir = $('#static-dir').attr('data-static-dir');
 
 
     custom_color_text = color_picker_btn.text();
@@ -267,7 +269,7 @@ function parse_server_response(master_response, color_str, svg_image) {
             $(document.body).removeClass();
             $(document.body).css('background-color', css_style_str);
             if (svg_image !== 'none')
-                $(document.body).css('background-image', 'url(media/bg/' + svg_image + '),' + 'url(media/bg/' + svg_image + ')');
+                $(document.body).css('background-image', 'url(' + static_dir + 'lights/media/bg/' +  svg_image + '),' + 'url(' + static_dir + 'lights/media/bg/' + svg_image + ')');
         }
 
         remote_buttons.css('color', css_style_str);

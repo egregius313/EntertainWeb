@@ -69,6 +69,7 @@
 <div id="variables">
     {% csrf_token %}
     <div id="status_request" disabled="true" data-ajax-url="{% url 'lights:status_request' %}"></div>
+    <div id="static-dir" data-static-dir="{% get_static_prefix %}"></div>
     <div class="off-bg" disabled="true"></div>
     <div class="sleep-bg" disabled="true"></div>
     <div class="movie-bg" disabled="true"></div>
