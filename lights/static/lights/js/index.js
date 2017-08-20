@@ -260,8 +260,10 @@ function parse_server_response(master_response, color_str) {
             $(document.body).removeClass();
             $(document.body).addClass(master_response + '-bg')
         }
-        else
+        else {
+            $(document.body).removeAttr("background-image");
             $(document.body).css('background-color', css_style_str);
+        }
 
         remote_buttons.css('color', css_style_str);
         remote_buttons.css('border', '5px outset ' + css_style_str);
