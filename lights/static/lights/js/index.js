@@ -185,7 +185,7 @@ $(document).ready(function () {
     });
 
 
-    token_input.change(function () {
+    token_input.on('input', function() {
         if (token_input.val().length === 4) {
             var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
             overlay.toggleClass("loading-anim");
