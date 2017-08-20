@@ -225,8 +225,8 @@ function status_request() {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         },
         success: function (data) {
-            if (data.responseJSON['master_response'] !== 'bad request') {
-                parse_status_request(data.responseJSON['master_response'])
+            if (data['master_response'] !== 'bad request') {
+                parse_status_request(data['master_response'])
             }
         }
     });
