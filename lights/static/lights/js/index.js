@@ -267,7 +267,7 @@ function parse_server_response(master_response, color_str, svg_image) {
             $(document.body).removeClass();
             $(document.body).css('background-color', css_style_str);
             if (svg_image !== 'none')
-                (document.body).css('background-image', 'url(media/bg/' + svg_image + '),' + 'url(media/bg/' + svg_image + ')');
+                $(document.body).css('background-image', 'url(media/bg/' + svg_image + '),' + 'url(media/bg/' + svg_image + ')');
         }
 
         remote_buttons.css('color', css_style_str);
