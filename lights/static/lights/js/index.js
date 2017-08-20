@@ -257,7 +257,7 @@ function parse_server_response(master_response, color_str) {
 
         if ($('.' + master_response + '-bg').length) {
             $(document.body).removeClass();
-            $(document.body).addClass('.' + master_response + '-bg')
+            $(document.body).addClass(master_response + '-bg')
         }
         else
             $(document.body).css('background-color', css_style_str);
