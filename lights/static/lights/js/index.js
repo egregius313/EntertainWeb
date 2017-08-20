@@ -293,7 +293,8 @@ function button_pressed(button) {
         xhttp.onreadystatechange = function () {
             if (this.readyState === 4 && this.status === 200) {
                 var related_color = 'rgb(' + JSON.parse(this.responseText)['related_color'] + ')';
-                parse_server_response(JSON.parse(this.responseText)['master_response'], related_color, this.responseText['svg_image'])
+                var response = JSON.parse(this.responseText);
+                parse_server_response(response['master_response'], related_color, response['svg_image'])
             }
         };
         xhttp.open("POST", document.getElementById('button-pressed-url').getAttribute('data-ajax-url'), true);
