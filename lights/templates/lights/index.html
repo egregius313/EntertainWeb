@@ -83,8 +83,8 @@
     </div>
 {% endif %}
 
+{% csrf_token %}
 <div id="variables">
-    {% csrf_token %}
     <div id="status_request" disabled="true" data-ajax-url="{% url 'lights:status_request' %}"></div>
     <div id="static-dir" data-static-dir="{% get_static_prefix %}"></div>
     <div class="off-bg" disabled="true"></div>
