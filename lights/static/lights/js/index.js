@@ -275,6 +275,7 @@ function parse_server_response(master_response, color_str, svg_image) {
 
         remote_buttons.css('color', css_style_str);
         remote_buttons.css('border', '5px outset ' + css_style_str);
+        $('.text_container').css('color', css_style_str);
 
         // if ($('.is_mobile_device').css('display') !== 'none')
         if (last_button)
