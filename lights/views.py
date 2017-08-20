@@ -61,7 +61,7 @@ def check_auth(request):
 
 
 def status_request(request):
-    status_update = b'1'
+    status_update = '1'
 
     if check_auth(request):
         master_response = send_to_master(status_update).decode()
