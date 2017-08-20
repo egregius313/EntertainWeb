@@ -238,7 +238,7 @@ function status_request() {
 function parse_status_request(master_response) {
     var color_str;
     if (master_response !== 'bad request' && master_response !== 'timeout') {
-        if (master_response.charAt(0) === 'c') { // 'c' would be a custom color
+        if (master_response.substring(0,2) === 'c:') { // 'c:' would be a custom color
             color_str = 'rgb(' + master_response.substring(2) + ')';
         }
         else
@@ -259,7 +259,7 @@ function parse_server_response(master_response, color_str, svg_image) {
     if (master_response !== 'bad request' && master_response !== 'timeout') {
         css_style_str = color_str;
 
-        if (master_response.charAt(0) !== 'c' && $('.' + master_response + '-bg').length) {
+        if (master_response.substring(0,2) !== 'c:' && $('.' + master_response + '-bg').length) {
             $(document.body).removeAttr('style');
             $(document.body).removeClass();
             $(document.body).addClass(master_response + '-bg');
@@ -272,7 +272,7 @@ function parse_server_response(master_response, color_str, svg_image) {
             if (svg_image !== 'none')
                 $(document.body).css('background-image', 'url(' + static_dir + 'lights/media/bg/' +  svg_image + '),' + 'url(' + static_dir + 'lights/media/bg/' + svg_image + ')');
         }
-
+        $('#status_text').text(get_flavor_message(master_response));
         remote_buttons.css('color', css_style_str);
         remote_buttons.css('border', '5px outset ' + css_style_str);
         $('.text_container').css('color', css_style_str);
@@ -311,6 +311,44 @@ function button_pressed(button) {
     }
 }
 
+
+function get_flavor_message(master_response) {
+    if (master_response.substring(0,2) === 'c:')
+        return "A custom color is set.";
+
+    switch (master_response) {
+        case "string":
+            return "A custom string is set.";
+        case "off":
+            return "The lights are off.";
+        case "sleep":
+            return "Goodnight!";
+        case "movie":
+            return "Enjoy the movie!";
+        case "thunder":
+            return "There is a thunderstorm.";
+        case "rain":
+            return "It's raining.";
+        case "snow":
+            return "It's snowing.";
+        case "sunrise":
+            return "The sun is rising.";
+        case "midday":
+            return "It is midday.";
+        case "sunset":
+            return "The sun is setting.";
+        case "sundown":
+            return "The sun has set.";
+        case "calendar":
+            return "Today is a special day!";
+        case "rangers":
+            return "The Rangers won last night!";
+        case "steelers":
+            return "The Steelers won last night!";
+        case "stocks":
+            return "The DJI changed significantly."
+    }
+}
 
 function pad_str(str, max) {
     str = str.toString();
