@@ -101,7 +101,7 @@ def verify_token(request):
 def verify_password(request):
     if check_auth(request):
         password_raw = request.POST['password']
-        user = authenticate(request, username='michael', password=password_raw)
+        user = authenticate(request, username='token_robot', password=password_raw)
         if user is not None:
             token = AccessToken.objects.create()
             access_token = token.token
