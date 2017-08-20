@@ -133,8 +133,8 @@ $(document).ready(function () {
                     form_enabled = true;
                     overlay.toggleClass("loading-anim");
 
-                    if (data.responseJSON['access_token'] !== 'bad request') {
-                        access_code = data.responseJSON['access_token'];
+                    if (data['access_token'] !== 'bad request') {
+                        access_code = data['access_token'];
                         $('#sign-in-container').hide();
 
                         $('#access_code').text(access_code);
@@ -166,7 +166,7 @@ $(document).ready(function () {
                 success: function (data) {
                     form_enabled = true;
                     overlay.toggleClass("loading-anim");
-                    if (data.responseJSON['response'] === 'success')
+                    if (data['response'] === 'success')
                         access_code_life.css('border-color', '#02d570');
                     else
                         access_code_life.css('border-color', '#ff4303');
