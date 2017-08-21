@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-if platform.system() is not 'Windows':
+if platform.system() != 'Windows':
     SECRET_KEY = os.environ['SECRET_KEY']
 
     DEBUG = False
@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'entertainweb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-if 'RDS_DB_NAME' in os.environ and platform.system() is not 'Windows':
+if 'RDS_DB_NAME' in os.environ and platform.system() != 'Windows':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -151,8 +151,5 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-if platform.system() is not 'Windows':
-    STATIC_ROOT = '/webapps/entertainweb/www/static/'
-else:
-    STATIC_ROOT = 'www/static/'
+STATIC_ROOT = 'www/static/' if platform.system() == 'Windows' else '/webapps/entertainweb/www/static/'
 STATIC_URL = '/static/'
